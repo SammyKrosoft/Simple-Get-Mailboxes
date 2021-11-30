@@ -3,4 +3,4 @@ Simple script to get mailboxes per database - OnPrem only (Exchange 2010,2013,20
 
 # Download version from this repo
 
-[DIRECT DOWNLOAD](https://raw.githubusercontent.com/SammyKrosoft/Simple-Get-Mailboxes/main/GetMailboxForeachDB.ps1)
+[RIGHT-CLICK-SAVE TO DIRECT DOWNLOAD](https://raw.githubusercontent.com/SammyKrosoft/Simple-Get-Mailboxes/main/GetMailboxForeachDB.ps1)
