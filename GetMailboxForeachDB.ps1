@@ -13,4 +13,7 @@ Foreach ($database in $Databases) {
     $Dbprogresscounter++
 }
 
+$TotalMailboxesFound = $MailboxesCollection.Count
+Write-Host "Found $TotalMailboxesFound mailboxes total." -ForegroundColor Green -backgroundcolor darkblue
+
 $MailboxesCollection | Export-CSV "$($env:USERPROFILE)\Documents\$OutputFileName" -NoTypeInformation -Encoding UTF8
