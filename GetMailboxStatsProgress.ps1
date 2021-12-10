@@ -47,9 +47,11 @@ Foreach ($database in $Databases) {
         }
         $ObjectCollectionToExport += $Object
         $Dbprogresscounter++
-}
+    }
     #endregion End of Antonio Routine
+}
 
+#Now dumping all the information from the $ObjectCollectionToExport variable into the file
 $ObjectCollectionToExport | Export-Csv $OutputFile -NoTypeInformation -Encoding 'UTF8'
 
 #Now appending string to the output file to indicate the script finished
