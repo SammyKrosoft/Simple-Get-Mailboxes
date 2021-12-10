@@ -22,38 +22,43 @@ Foreach ($database in $Databases) {
     write-progress -Id 1 -Activity "Parsing databases" -Status "Now in database $($database.Name), $($DatabasesCount-$DBProgresscounter) databases left... ..." -PercentComplete $($Dbprogresscounter/$DatabasesCount*100)
     $Mailboxes = $null
     $Mailboxes = Get-Mailbox -ResultSize Unlimited -Database $Database -Filter {RecipientTypeDetails -ne "DiscoveryMailbox"}| Select Name,PrimarySMTPAddress,REcipientTypeDetails,RecipientType, LitigationHoldEnabled, IssueWarningQuota, ProhibitSendQuota, ProhibitSendReceiveQuota, RetainDeletedItemsFor, UseDatabaseQuotaDefaults, SingleItemRecoveryEnabled, RecoverableItemsQuota, UseDatabaseRetentionDefaults, Database
-    Write-Host "Found $($Mailboxes.count) mailboxes on database $($Database.name) ..." -ForegroundColor Green
 
-    #region Inserting ESDC mailbox info collection Routine from Antonio Rodriguez script ###########
-    $mbxCount = $Mailboxes.count
-    $mbxCounter = 0
-    Foreach ($mbx in $Mailboxes) {
-        write-progress -ParentId 1 -Activity "Getting mailbox stats..." -status "Getting stats for mailbox $($mbx.name), $($mbxCount-$mbxCounter) mailboxes left..." -PercentComplete $($mbxCounter/$mbxCount*100)
-        $stats = Get-MailboxStatistics $mbx.name | Select-Object Lastlogontime, TotalItemSize, Itemcount, TotalDeletedItemSize
-        $user = Get-User $_.Name | Select-Object SID
+    If ($Mailboxes -eq $null -or $Mailboxes -eq "") Then {
+        Write-Host "No mailboxes found on database $($Database.Name) ... moving on to next database (if any)" -ForegroundColor DarkRed -BackgroundColor Yellow
+    } Else {
+    
+        Write-Host "Found $($Mailboxes.count) mailboxes on database $($Database.name) ..." -ForegroundColor Green    
+        #region Inserting ESDC mailbox info collection Routine from Antonio Rodriguez script ###########
+        $mbxCount = $Mailboxes.count
+        $mbxCounter = 0
+        Foreach ($mbx in $Mailboxes) {
+            write-progress -ParentId 1 -Activity "Getting mailbox stats..." -status "Getting stats for mailbox $($mbx.name), $($mbxCount-$mbxCounter) mailboxes left..." -PercentComplete $($mbxCounter/$mbxCount*100)
+            $stats = Get-MailboxStatistics $mbx.name | Select-Object Lastlogontime, TotalItemSize, Itemcount, TotalDeletedItemSize
+            $user = Get-User $_.Name | Select-Object SID
 
-        $Object = New-Object -TypeName PSObject -Property @{
-            RecipientType = $mbx.RecipientType
-            LitigationHoldEnabled = $mbx.LitigationHoldEnabled
-            IssueWarningQuota = $mbx.IssueWarningQuota
-            ProhibitSendQuota = $mbx.ProhibitSendQuota
-            ProhibitSendReceiveQuota = $mbx.ProhibitSendReceiveQuota
-            RetainDeletedItemsFor = $mbx.RetainDeletedItemsFor
-            UseDatabaseQuotaDefaults = $mbx.UseDatabaseQuotaDefaults
-            SingleItemRecoveryEnabled = $mbx.SingleItemRecoveryEnabled
-            RecoverableItemsQuotaS = $mbx.RecoverableItemsQuota
-            UseDatabaseRetentionDefaults = $mbx.UseDatabaseRetentionDefaults
-            Database = $mbx.Database
-            Lastlogontime = $stats.Lastlogontime
-            TotalItemSize = $stats.TotalItemSize
-            Itemcount = $stats.Itemcount
-            TotalDeletedItemSize = $stats.TotalDeletedItemSize
-            SID = $user.SID
+            $Object = New-Object -TypeName PSObject -Property @{
+                RecipientType = $mbx.RecipientType
+                LitigationHoldEnabled = $mbx.LitigationHoldEnabled
+                IssueWarningQuota = $mbx.IssueWarningQuota
+                ProhibitSendQuota = $mbx.ProhibitSendQuota
+                ProhibitSendReceiveQuota = $mbx.ProhibitSendReceiveQuota
+                RetainDeletedItemsFor = $mbx.RetainDeletedItemsFor
+                UseDatabaseQuotaDefaults = $mbx.UseDatabaseQuotaDefaults
+                SingleItemRecoveryEnabled = $mbx.SingleItemRecoveryEnabled
+                RecoverableItemsQuotaS = $mbx.RecoverableItemsQuota
+                UseDatabaseRetentionDefaults = $mbx.UseDatabaseRetentionDefaults
+                Database = $mbx.Database
+                Lastlogontime = $stats.Lastlogontime
+                TotalItemSize = $stats.TotalItemSize
+                Itemcount = $stats.Itemcount
+                TotalDeletedItemSize = $stats.TotalDeletedItemSize
+                SID = $user.SID
+            }
+            $ObjectCollectionToExport += $Object
+            $mbxCounter++
         }
-        $ObjectCollectionToExport += $Object
-        $mbxCounter++
+        #endregion End of Antonio Routine
     }
-    #endregion End of Antonio Routine
     $Dbprogresscounter++
 }
 
