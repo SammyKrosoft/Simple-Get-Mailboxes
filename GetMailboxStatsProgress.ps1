@@ -59,4 +59,4 @@ Foreach ($database in $Databases) {
 $ObjectCollectionToExport | Export-Csv $OutputFile -NoTypeInformation -Encoding 'UTF8'
 
 #Now appending string to the output file to indicate the script finished
-Add-Content -Path $OutputFile -Value "`n#####Script completed successfully######"
+#Add-Content -Path $OutputFile -Value "`n#####Script completed successfully######"
