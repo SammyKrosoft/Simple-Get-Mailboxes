@@ -23,7 +23,7 @@ Foreach ($database in $Databases) {
     $Mailboxes = $null
     $Mailboxes = Get-Mailbox -ResultSize Unlimited -Database $Database -Filter {RecipientTypeDetails -ne "DiscoveryMailbox"}| Select Name,PrimarySMTPAddress,REcipientTypeDetails,RecipientType, LitigationHoldEnabled, IssueWarningQuota, ProhibitSendQuota, ProhibitSendReceiveQuota, RetainDeletedItemsFor, UseDatabaseQuotaDefaults, SingleItemRecoveryEnabled, RecoverableItemsQuota, UseDatabaseRetentionDefaults, Database
 
-    If ($Mailboxes -eq $null -or $Mailboxes -eq "") Then {
+    If ($Mailboxes -eq $null -or $Mailboxes -eq "") {
         Write-Host "No mailboxes found on database $($Database.Name) ... moving on to next database (if any)" -ForegroundColor DarkRed -BackgroundColor Yellow
     } Else {
     
