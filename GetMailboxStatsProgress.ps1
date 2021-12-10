@@ -17,7 +17,7 @@ $DatabasesCount = $Databases.Count
 Write-Host "Found $DatabasesCount databases..." -ForegroundColor Green
 $ObjectCollectionToExport = @()
 Foreach ($database in $Databases) {
-    write-progress -Id 1 -Activity "Parsing databases" -Status "Now in database $($database.Name) ..." -PercentComplete $($Dbprogresscounter/$DatabasesCount*100)
+    write-progress -Id 1 -Activity "Parsing databases" -Status "Now in database $($database.Name), $($DatabasesCount-$DBProgresscounter) databases left... ..." -PercentComplete $($Dbprogresscounter/$DatabasesCount*100)
     $Mailboxes = $null
     $Mailboxes = Get-Mailbox -ResultSize Unlimited -Database $Database -Filter {RecipientTypeDetails -ne "DiscoveryMailbox"}| Select Name,PrimarySMTPAddress,REcipientTypeDetails,RecipientType, LitigationHoldEnabled, IssueWarningQuota, ProhibitSendQuota, ProhibitSendReceiveQuota, RetainDeletedItemsFor, UseDatabaseQuotaDefaults, SingleItemRecoveryEnabled, RecoverableItemsQuota, UseDatabaseRetentionDefaults, Database
     Write-Host "Found $($Mailboxes.count) mailboxes on database $($Database.name) ..." -ForegroundColor Green
@@ -26,7 +26,7 @@ Foreach ($database in $Databases) {
     $mbxCount = $Mailboxes.count
     $mbxCounter = 0
     Foreach ($mbx in $Mailboxes) {
-        write-progress -ParentId 1 -Activity "Getting mailbox stats..." -status "Getting stats for mailbox $($mbx.name)" -PercentComplete $($mbxCounter/$mbxCount*100)
+        write-progress -ParentId 1 -Activity "Getting mailbox stats..." -status "Getting stats for mailbox $($mbx.name), $($mbxCount-$mbxCounter) mailboxes left..." -PercentComplete $($mbxCounter/$mbxCount*100)
         $stats = Get-MailboxStatistics $mbx.name | Select-Object Lastlogontime, TotalItemSize, Itemcount, TotalDeletedItemSize
         $user = Get-User $_.Name | Select-Object SID
 
@@ -39,7 +39,7 @@ Foreach ($database in $Databases) {
             RetainDeletedItemsFor = $mbx.RetainDeletedItemsFor
             UseDatabaseQuotaDefaults = $mbx.UseDatabaseQuotaDefaults
             SingleItemRecoveryEnabled = $mbx.SingleItemRecoveryEnabled
-            RecoverableItemsQuota = $mbx.RecoverableItemsQuota
+            RecoverableItemsQuotaS = $mbx.RecoverableItemsQuota
             UseDatabaseRetentionDefaults = $mbx.UseDatabaseRetentionDefaults
             Database = $mbx.Database
             Lastlogontime = $stats.Lastlogontime
