@@ -2,6 +2,8 @@
 #Author - Antonio Rodrigues - antonio.rodrigues@ssc-spc.gc.ca
 #Last Updated - Dec 4, 2021
 
+#Optimized on 09 December 2021
+
 #Original location :
 #$OutputFile = "C:\exchange-monitoring\reporting\pickup_folder\mb.csv"
 #Sam Lab location:
