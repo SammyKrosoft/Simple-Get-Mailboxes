@@ -34,7 +34,7 @@ Foreach ($database in $Databases) {
         Foreach ($mbx in $Mailboxes) {
             write-progress -ParentId 1 -Activity "Getting mailbox stats..." -status "Getting stats for mailbox $($mbx.name), $($mbxCount-$mbxCounter) mailboxes left..." -PercentComplete $($mbxCounter/$mbxCount*100)
             $stats = Get-MailboxStatistics $mbx.name | Select-Object Lastlogontime, TotalItemSize, Itemcount, TotalDeletedItemSize
-            $user = Get-User $_.Name | Select-Object SID
+            $user = Get-User $mbx.Name | Select-Object SID
 
             $Object = New-Object -TypeName PSObject -Property @{
                 RecipientType = $mbx.RecipientType
